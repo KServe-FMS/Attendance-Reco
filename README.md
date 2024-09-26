@@ -8,7 +8,6 @@ This tool streamlines the process of reconciling employee attendance between a b
   - pandas
   - openpyxl
   - argparse
-  - pyxlsb (if using .xlsb files)
 
 To install the required libraries, run:
 
