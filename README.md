@@ -26,7 +26,7 @@ Store the backend data (e.g., Qandle.xlsx) in the backend directory.
 Pass the new attendance file as an argument when running the tool.
 
 ## Usage
-###Command-Line Execution
+### Command-Line Execution
 Run the script using the following command:
 
 ```bash
@@ -39,17 +39,17 @@ python main.py --file "new_attendance.xlsx"
 ```
 
 ## Input and Output
-###Backend Data:
+### Backend Data:
 The backend file should be stored as backend/Qandle.xlsx (or other supported formats).
 The sheet name in the backend file should be Qandle.
 
-###New Attendance Data:
+### New Attendance Data:
 The new attendance file must contain a sheet named Attn. If absent, the tool will default to the first sheet.
 
-###Generated Report:
+### Generated Report:
 After processing, the tool will generate an Excel report (attendance_discrepancy_report.xlsx), summarizing mismatches between the two datasets.
 
-###Report Columns
+### Report Columns
 | Column   | Description                                |
 |----------|--------------------------------------------|
 | Emp ID   | Employee ID                                |
