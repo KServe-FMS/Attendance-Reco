@@ -157,21 +157,21 @@ def compare_attendance(backend_data, new_attendance):
                 if date == 'Employee Name':
                     continue
                 
-                attn_value = new_attendance.at[emp_id, date]
+                uploaded_value = new_attendance.at[emp_id, date]
                 qandle_value = backend_data.at[emp_id, date] if date in backend_data.columns else 'N/A'
                 
                 # Determine if there's a mismatch
-                if (attn_value == 'nan' or pd.isna(attn_value)) and (qandle_value == 'nan' or pd.isna(qandle_value)):
+                if (uploaded_value == 'nan' or pd.isna(uploaded_value)) and (qandle_value == 'nan' or pd.isna(qandle_value)):
                     mismatch = 'No'
-                    attn_display = ''
+                    uploaded_display = ''
                     qandle_display = ''
-                elif attn_value != qandle_value:
+                elif uploaded_value != qandle_value:
                     mismatch = 'Yes'
-                    attn_display = attn_value if attn_value != 'nan' else ''
+                    uploaded_display = uploaded_value if uploaded_value != 'nan' else ''
                     qandle_display = qandle_value if qandle_value != 'nan' else ''
                 else:
                     mismatch = 'No'
-                    attn_display = attn_value if attn_value != 'nan' else ''
+                    uploaded_display = uploaded_value if uploaded_value != 'nan' else ''
                     qandle_display = qandle_value if qandle_value != 'nan' else ''
                 
                 # Convert date back to desired format for reporting
@@ -185,7 +185,7 @@ def compare_attendance(backend_data, new_attendance):
                     "Emp ID": emp_id,
                     "Emp Name": emp_name,
                     "Date": date_str,
-                    "Attn": attn_display,
+                    "Manual": uploaded_display,
                     "Qandle": qandle_display,
                     "Mismatch": mismatch
                 })
@@ -195,7 +195,7 @@ def compare_attendance(backend_data, new_attendance):
                 if date == 'Employee Name':
                     continue  # Skip the Employee Name column
                 
-                attn_value = new_attendance.at[emp_id, date]
+                uploaded_value = new_attendance.at[emp_id, date]
                 
                 # Convert date back to desired format for reporting
                 try:
@@ -208,7 +208,7 @@ def compare_attendance(backend_data, new_attendance):
                     "Emp ID": emp_id,
                     "Emp Name": emp_name,
                     "Date": date_str,
-                    "Attn": attn_value if not (attn_value == 'nan' or pd.isna(attn_value)) else '',
+                    "Manual": uploaded_value if not (uploaded_value == 'nan' or pd.isna(uploaded_value)) else '',
                     "Qandle": 'Employee not found in backend',
                     "Mismatch": 'Yes'
                 })
@@ -223,7 +223,7 @@ def generate_report(report_entries):
     report_df = pd.DataFrame(report_entries)
     
     # Reorder columns to match the requested format
-    report_df = report_df[["Emp ID", "Emp Name", "Date", "Attn", "Qandle", "Mismatch"]]
+    report_df = report_df[["Emp ID", "Emp Name", "Date", "Manual", "Qandle", "Mismatch"]]
     
     # Save the report to a BytesIO object instead of a file
     report_buffer = io.BytesIO()
@@ -240,10 +240,10 @@ def generate_unique_id():
     return str(uuid.uuid4())
 
 def save_uploaded_file(uploaded_file_path, unique_id):
-    os.makedirs('attn', exist_ok=True)
+    os.makedirs('uploads', exist_ok=True)
     file_extension = os.path.splitext(uploaded_file_path)[1]
     new_filename = f"{unique_id}{file_extension}"
-    new_path = os.path.join('attn', new_filename)
+    new_path = os.path.join('uploads', new_filename)
     shutil.copy(uploaded_file_path, new_path)
     logging.info(f"Saved uploaded file to {new_path}")
     return new_path
@@ -327,7 +327,7 @@ def process_attendance_file(uploaded_file_path):
         if report_buffer:
             # Save the report with the unique ID
             report_filename = f"discrepancy_report_{unique_id}.xlsx"
-            report_path = os.path.join('attn', report_filename)
+            report_path = os.path.join('reports', report_filename)
             with open(report_path, 'wb') as f:
                 f.write(report_buffer.getvalue())
             logging.info(f"Discrepancy report saved to {report_path}")
