@@ -133,7 +133,7 @@ def compare_attendance(backend_data, new_attendance):
                     continue
                 
                 uploaded_value = new_attendance.at[emp_id, date]
-                qandle_value = backend_data.at[emp_id, date] if date in backend_data.columns else 'N/A'
+                qandle_value = backend_data.at[emp_id, date] if date in backend_data.columns else ''
                 
                 if (uploaded_value == 'nan' or pd.isna(uploaded_value)) and (qandle_value == 'nan' or pd.isna(qandle_value)):
                     mismatch = 'No'
@@ -341,6 +341,7 @@ def create_gradio_interface():
             """
             Upload one or more attendance files, and the tool will process them against the backend data to generate discrepancy reports.
             Supported file formats: `.xlsx`, `.xls`, `.csv`.
+            Make sure the processing data sheet name is `Attn` or `attn`.
             """
         )
         
