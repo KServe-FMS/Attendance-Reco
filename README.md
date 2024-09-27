@@ -7,12 +7,14 @@ This tool streamlines the process of reconciling employee attendance between a b
 - Libraries:
   - pandas
   - openpyxl
-  - argparse
+  - tqdm
+  - gradio
+  - schedule
 
 To install the required libraries, run:
 
 ```bash
-pip install -r reqs.txt
+pip install -r requirements.txt
 ```
 
 ## File Structure
@@ -54,7 +56,7 @@ After processing, the tool will generate an Excel report (attendance_discrepancy
 | Emp ID   | Employee ID                                |
 | Emp Name | Employee Name                              |
 | Date     | Date of the attendance entry               |
-| Attn     | Value from the new attendance file         |
+| Manual   | Value from the new attendance file         |
 | Qandle   | Value from the backend file                |
 | Mismatch | Indicates if a mismatch was found          |
 
