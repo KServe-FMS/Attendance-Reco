@@ -100,7 +100,7 @@ def load_new_attendance(file_path=None, file_bytes=None):
                     df = pd.read_excel(file_path, sheet_name=attn_sheets[0])
                     logging.info(f"Using '{attn_sheets[0]}' sheet from the Excel file.")
                 else:
-                    logging.warning("'Attn' or 'attn' sheet not found. Using the first sheet.")
+                    logging.warning("'attn' sheet not found. Using the first sheet.")
                     df = pd.read_excel(file_path, sheet_name=0)
             elif file_extension == '.csv':
                 df = pd.read_csv(file_path)
@@ -199,7 +199,7 @@ def generate_report(report_entries):
     report_df.to_excel(report_buffer, index=False)
     report_buffer.seek(0)
     
-    logging.info("Discrepancy report generated in memory.")
+    logging.info("Discrepancy report generated.")
     total_mismatches = report_df[report_df["Mismatch"] == "Yes"].shape[0]
     logging.info(f"Total mismatches found: {total_mismatches}")
     
@@ -255,18 +255,18 @@ def process_attendance_file(uploaded_file_path, output_folder='reports'):
                             None)
         
         if not backend_file:
-            logging.error("Qandle file not found in the 'backend' directory.")
-            return None, "Qandle file not found in the 'backend' directory."
+            logging.error("Qandle data not found in the 'backend' directory.")
+            return None, "Qandle data not found in the 'backend' directory."
         
         logging.info(f"Loading Qandle data from: {backend_file}")
         backend_data = load_backend_data(file_path=backend_file)
         logging.info(f"Qandle data loaded. Shape: {backend_data.shape}")
         
         file_extension = os.path.splitext(saved_file_path)[1].lower()
-        logging.info(f"Loading new attendance data from: {saved_file_path}")
+        logging.info(f"Loading attendance data from: {saved_file_path}")
         if file_extension in ['.xls', '.xlsx', '.xlsm', '.csv']:
             new_attendance = load_new_attendance(file_path=saved_file_path)
-            logging.info(f"New attendance data loaded. Shape: {new_attendance.shape}")
+            logging.info(f"Attendance data loaded. Shape: {new_attendance.shape}")
         else:
             return None, f"Unsupported file format: {file_extension}"
         
@@ -340,13 +340,13 @@ def create_gradio_interface():
         gr.Markdown(
             """
             Upload one or more attendance files, and the tool will process them against the backend data to generate discrepancy reports.
-            Supported file formats: `.xlsx`, `.xls`, `.csv`.
-            Make sure the processing data sheet name is `Attn` or `attn`.
+            Supported file formats: `.xlsx`, `.xls`, `.xlsm`, `.csv`.
+            Make sure the processing data sheet name is `attn`.
             """
         )
         
         with gr.Row():
-            upload = gr.File(label="Upload Attendance Files", file_types=[".xlsx", ".xls", ".csv"], file_count="multiple")
+            upload = gr.File(label="Upload Attendance Files", file_types=[".xlsx", ".xls", ".csv", ".xlsm"], file_count="multiple")
         
         with gr.Row():
             process_button = gr.Button("Process Attendance")
@@ -419,7 +419,7 @@ def main():
         logging.info(f"Processing files in folder: {input_folder}")
         
         for filename in os.listdir(input_folder):
-            if filename.lower().endswith(('.xlsx', '.xls', '.csv')):
+            if filename.lower().endswith(('.xlsx', '.xls', '.xlsm', '.csv')):
                 file_path = os.path.join(input_folder, filename)
                 logging.info(f"Processing file: {file_path}")
                 
